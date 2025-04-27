@@ -1,0 +1,18 @@
+{
+  "name": "flashwave",
+  "version": "1.0.0",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "esbuild src/offscreen.js --bundle --outfile=dist/offscreen.js --format=esm --platform=browser"
+  },
+  "keywords": [],
+  "author": "Ethan Zemelman",
+  "description": "",
+  "devDependencies": {
+    "esbuild": "^0.25.3"
+  },
+  "dependencies": {
+    "@google/genai": "^0.10.0"
+  }
+}
