@@ -5,8 +5,6 @@
   "description": "Generate flashcards from selected text on any webpage using AI.",
   "permissions": [
     "contextMenus",
-    "activeTab",
-    "scripting",
     "storage",
     "offscreen"
   ],
