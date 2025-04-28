@@ -1,5 +1,7 @@
+import browser from "webextension-polyfill";
+
 async function getApiKey() {
-  const result = await chrome.storage.sync.get(["apiKey"]);
+  const result = await browser.storage.sync.get(["apiKey"]);
   if (result.apiKey) {
     return result.apiKey;
   } else {
@@ -8,102 +10,86 @@ async function getApiKey() {
 }
 
 // Create context menu item on installation
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.contextMenus.create({
+browser.runtime.onInstalled.addListener(() => {
+  browser.contextMenus.create({
     id: "generateFlashcards",
     title: "Generate Flashcards with AI",
     contexts: ["selection"],
   });
 });
 
-chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+browser.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "generateFlashcards" && info.selectionText) {
     const apiKey = await getApiKey();
     const originalTabId = tab.id;
 
     if (!apiKey) {
       if (originalTabId) {
-        chrome.tabs.sendMessage(originalTabId, {
-          type: "SHOW_ERROR",
-          message: "Gemini API Key not configured. Please set it in the extension settings.",
-        });
+        try {
+          await browser.tabs.sendMessage(originalTabId, {
+            type: "SHOW_ERROR",
+            message: "Gemini API Key not configured. Please set it in the extension settings.",
+          });
+        } catch (error) {
+          console.warn(`Could not send message to tab ${originalTabId}: ${error.message}`);
+        }
       }
       return;
     }
 
-    await setupOffscreenDocument("offscreen.html");
-    chrome.runtime
-      .sendMessage({
-        type: "generate-flashcards",
-        target: "offscreen",
-        data: {
-          selectedText: info.selectionText,
-          apiKey: apiKey,
-          originalTabId: originalTabId,
-        },
-      })
-      .catch((error) => {
-        console.error("Error sending 'generate-flashcards' message to offscreen document:", error);
-        if (originalTabId) {
-          chrome.tabs.sendMessage(originalTabId, {
-            type: "SHOW_ERROR",
-            message: `There was an error generating flashcards.`,
-          });
-        }
+    try {
+      await generateFlashcards({
+        selectedText: info.selectionText,
+        apiKey: apiKey,
+        originalTabId: originalTabId,
       });
+    } catch (error) {
+      console.error("Error generating flashcards in background:", error);
+      if (originalTabId) {
+        try {
+          await browser.tabs.sendMessage(originalTabId, {
+            type: "SHOW_ERROR",
+            message: "There was an error generating flashcards.",
+          });
+        } catch (sendError) {
+          console.warn(
+            `Could not send error message to tab ${originalTabId}: ${sendError.message}`
+          );
+        }
+      }
+    }
   }
 });
 
-let creating; // A global promise to avoid concurrency issues
-async function setupOffscreenDocument(path) {
-  const offscreenUrl = chrome.runtime.getURL(path);
-  const existingContexts = await chrome.runtime.getContexts({
-    contextTypes: ["OFFSCREEN_DOCUMENT"],
-    documentUrls: [offscreenUrl],
+async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
+  const { GoogleGenAI } = await import("@google/genai");
+  if (!apiKey) throw new Error("API Key is missing.");
+  if (!selectedText) throw new Error("Selected text is missing.");
+  const genAI = new GoogleGenAI({ apiKey });
+  const prompt = `Generate 3-5 flashcards (simple question and answer pairs) based on the following text. Format each flashcard as 'Q: [question]\nA: [answer]' and separate flashcards with a double newline:
+
+<text>
+${selectedText}
+</text>
+`;
+
+  const result = await genAI.models.generateContent({
+    model: "gemini-2.5-flash-preview-04-17",
+    contents: prompt,
   });
+  const flashcardsText = result.text;
 
-  if (existingContexts.length > 0) {
-    return;
+  if (originalTabId) {
+    try {
+      await browser.tabs.sendMessage(originalTabId, {
+        type: "SHOW_SUCCESS",
+        message: "Flashcards generated! Check the console.",
+      });
+    } catch (error) {
+      console.warn(`Could not send success message to tab ${originalTabId}: ${error.message}`);
+    }
   }
-
-  if (creating) {
-    await creating;
-  } else {
-    creating = chrome.offscreen.createDocument({
-      url: path,
-      reasons: ["DOM_PARSER"],
-      justification: "Needed to call the Gemini API",
-    });
-    await creating;
-    creating = null;
-  }
+  console.log("--- Generated Flashcards ---");
+  console.log(flashcardsText);
+  console.log("----------------------------");
 }
-
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
-  if (message.target !== "background") {
-    return false; // Ignore messages not intended for the background script
-  }
-
-  const originalTabId = message.data?.originalTabId;
-
-  if (message.type === "flashcards-generated") {
-    // TODO: Display flashcards to the user (e.g., new tab, inject into page)
-    console.log("--- Generated Flashcards --- ");
-    console.log(message.data.flashcardsText);
-    console.log("-----------------------------");
-
-    // Notify the original content script about success
-    chrome.tabs.sendMessage(originalTabId, {
-      type: "SHOW_SUCCESS",
-      message: "Flashcards generated! Check the console.",
-    });
-  } else if (message.type === "generation-error") {
-    console.error("Error generating flashcards:", message.error);
-    chrome.tabs.sendMessage(originalTabId, {
-      type: "SHOW_ERROR",
-      message: `Error: ${message.error}`,
-    });
-  }
-  // Indicate async handling is possible
-  return true;
-});

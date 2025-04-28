@@ -4,13 +4,14 @@
   "main": "background.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "esbuild src/offscreen.js --bundle --outfile=dist/offscreen.js --format=esm --platform=browser"
+    "build": "esbuild background.js popup.js content_script.js --bundle --outdir=dist --format=esm --platform=browser"
   },
   "keywords": [],
   "author": "Ethan Zemelman",
   "description": "",
   "devDependencies": {
-    "esbuild": "^0.25.3"
+    "esbuild": "^0.25.3",
+    "webextension-polyfill": "^0.12.0"
   },
   "dependencies": {
     "@google/genai": "^0.10.0"
