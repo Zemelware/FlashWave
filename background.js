@@ -62,22 +62,40 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
-  const { GoogleGenAI } = await import("@google/genai");
+  const { GoogleGenAI, Type } = await import("@google/genai");
   if (!apiKey) throw new Error("API Key is missing.");
   if (!selectedText) throw new Error("Selected text is missing.");
   const genAI = new GoogleGenAI({ apiKey });
-  const prompt = `Generate 3-5 flashcards (simple question and answer pairs) based on the following text. Format each flashcard as 'Q: [question]\nA: [answer]' and separate flashcards with a double newline:
-
-<text>
-${selectedText}
-</text>
-`;
+  const prompt = `Generate flashcards based on the following content.\n\n<content>\n${selectedText}\n</content>`;
+  const systemMessage = `You are a professional flash card generator. You help students study by generating flash cards based on their study content.\nAlways create an exhaustive list of flashcards that will prepare the user well for a test/exam. Make sure to include all important concepts and terms in the flashcards.`;
 
   const result = await genAI.models.generateContent({
     model: "gemini-2.5-flash-preview-04-17",
     contents: prompt,
+    config: {
+      systemInstruction: systemMessage,
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            question: { type: Type.STRING, description: 'Flashcard question', nullable: false },
+            answer: { type: Type.STRING, description: 'Flashcard answer', nullable: false },
+          },
+          required: ['question', 'answer'],
+          propertyOrdering: ['question', 'answer']
+        },
+      },
+    },
   });
-  const flashcardsText = result.text;
+  let flashcards;
+  try {
+    flashcards = JSON.parse(result.text);
+  } catch (e) {
+    flashcards = [];
+    console.error("Error parsing JSON response:", e);
+  }
 
   if (originalTabId) {
     try {
@@ -90,6 +108,6 @@ ${selectedText}
     }
   }
   console.log("--- Generated Flashcards ---");
-  console.log(flashcardsText);
-  console.log("----------------------------");
+  console.log(flashcards);
+  console.log("---------------------------------");
 }
