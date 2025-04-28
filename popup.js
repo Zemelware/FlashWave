@@ -2,7 +2,8 @@ import browser from "webextension-polyfill";
 
 document.addEventListener("DOMContentLoaded", () => {
   const apiKeyInput = document.getElementById("apiKey");
-  const saveButton = document.getElementById("saveButton");
+  const saveButton = document.getElementById("save-button");
+  const saveStatus = document.getElementById("save-status");
 
   // Load the saved API key when the popup opens
   browser.storage.sync.get(["apiKey"]).then((result) => {
@@ -15,7 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
   saveButton.addEventListener("click", () => {
     const apiKey = apiKeyInput.value.trim();
     browser.storage.sync.set({ apiKey: apiKey }).then(() => {
-      console.log("API Key saved.");
+      if (saveStatus) {
+        saveStatus.textContent = "API Key saved successfully!";
+        setTimeout(() => {
+          saveStatus.textContent = "";
+        }, 5000);
+      }
     });
   });
 });
