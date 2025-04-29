@@ -179,4 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   loadFlashcardSets();
+
+  // Listen for message from background to reload flashcard sets
+  browser.runtime.onMessage.addListener((message) => {
+    if (message && message.type === "FLASHCARDS_UPDATED") {
+      loadFlashcardSets();
+    }
+  });
 });

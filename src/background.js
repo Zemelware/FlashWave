@@ -153,9 +153,19 @@ async function saveAndShowFlashcards(setName, flashcards, originalTabId) {
 
     await browser.storage.local.set({ flashcardSets: allSets });
 
-    await browser.tabs.create({
-      url: browser.runtime.getURL("dist/flashcards/flashcards.html"),
-    });
+    // Check for existing flashcards tab
+    const flashcardsUrl = browser.runtime.getURL("dist/flashcards/flashcards.html");
+    const existingTabs = await browser.tabs.query({ url: flashcardsUrl });
+    if (existingTabs.length > 0) {
+      await browser.tabs.update(existingTabs[0].id, { active: true });
+      if (existingTabs[0].windowId) {
+        await browser.windows.update(existingTabs[0].windowId, { focused: true });
+      }
+      // Send message to flashcards tab to reload dropdown
+      await browser.tabs.sendMessage(existingTabs[0].id, { type: "FLASHCARDS_UPDATED" });
+    } else {
+      await browser.tabs.create({ url: flashcardsUrl });
+    }
   } catch (error) {
     console.error("Error storing flashcards or opening new tab:", error);
     if (originalTabId) {

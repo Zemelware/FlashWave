@@ -26,7 +26,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  openFlashcardsButton.addEventListener("click", () => {
-    browser.tabs.create({ url: browser.runtime.getURL("dist/flashcards/flashcards.html") });
+  openFlashcardsButton.addEventListener("click", async () => {
+    const flashcardsUrl = browser.runtime.getURL("dist/flashcards/flashcards.html");
+    const existingTabs = await browser.tabs.query({ url: flashcardsUrl });
+    if (existingTabs.length > 0) {
+      await browser.tabs.update(existingTabs[0].id, { active: true });
+      if (existingTabs[0].windowId) {
+        await browser.windows.update(existingTabs[0].windowId, { focused: true });
+      }
+    } else {
+      await browser.tabs.create({ url: flashcardsUrl });
+    }
   });
 });
