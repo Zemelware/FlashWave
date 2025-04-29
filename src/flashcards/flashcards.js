@@ -1,3 +1,5 @@
+import browser from "webextension-polyfill";
+
 document.addEventListener("DOMContentLoaded", () => {
   const setSelect = document.getElementById("set-select");
   const deleteSetButton = document.getElementById("delete-set-button");
