@@ -139,7 +139,7 @@ async function showFlashcards(flashcards, originalTabId) {
   try {
     await browser.storage.local.set({ flashcards: flashcards });
     await browser.tabs.create({
-      url: browser.runtime.getURL("flashcards.html"),
+      url: browser.runtime.getURL("dist/flashcards/flashcards.html"),
     });
   } catch (error) {
     console.error("Error storing flashcards or opening new tab:", error);

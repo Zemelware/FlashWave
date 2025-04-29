@@ -16,7 +16,7 @@
   ],
   "action": {
     "default_title": "FlashWave Settings",
-    "default_popup": "popup.html"
+    "default_popup": "dist/popup/popup.html"
   },
   "browser_specific_settings": {
     "gecko": {
@@ -26,7 +26,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["flashcards.html", "flashcards.js"],
+      "resources": ["dist/flashcards/flashcards.html", "dist/flashcards/flashcards.js", "dist/flashcards/flashcards.css"],
       "matches": ["<all_urls>"]
     }
   ]
