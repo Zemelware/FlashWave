@@ -37,8 +37,9 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
       return;
     }
 
+    let flashcards;
     try {
-      await generateFlashcards({
+      flashcards = await generateFlashcards({
         selectedText: info.selectionText,
         apiKey: apiKey,
         originalTabId: originalTabId,
@@ -58,6 +59,23 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
         }
       }
     }
+
+    if (flashcards && flashcards.length > 0) {
+      showFlashcards(flashcards, originalTabId);
+    } else {
+      if (originalTabId) {
+        try {
+          await browser.tabs.sendMessage(originalTabId, {
+            type: "SHOW_INFO",
+            message: "No flashcards were generated from the selected text.",
+          });
+        } catch (sendError) {
+          console.warn(
+            `Could not send 'no flashcards' message to tab ${originalTabId}: ${sendError.message}`
+          );
+        }
+      }
+    }
   }
 });
 
@@ -70,21 +88,26 @@ async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
   const systemMessage = `You are a professional flash card generator. You help students study by generating flash cards based on their study content.\nAlways create an exhaustive list of flashcards that will prepare the user well for a test/exam. Make sure to include all important concepts and terms in the flashcards.`;
 
   const result = await genAI.models.generateContent({
-    model: "gemini-2.5-flash-preview-04-17",
+    // model: "gemini-2.5-flash-preview-04-17",
+    model: "gemini-2.0-flash",
     contents: prompt,
     config: {
       systemInstruction: systemMessage,
-      responseMimeType: 'application/json',
+      responseMimeType: "application/json",
       responseSchema: {
         type: Type.ARRAY,
         items: {
           type: Type.OBJECT,
           properties: {
-            question: { type: Type.STRING, description: 'Flashcard question', nullable: false },
-            answer: { type: Type.STRING, description: 'Flashcard answer', nullable: false },
+            term: { type: Type.STRING, description: "Flashcard term (front)", nullable: false },
+            definition: {
+              type: Type.STRING,
+              description: "Flashcard definition (back)",
+              nullable: false,
+            },
           },
-          required: ['question', 'answer'],
-          propertyOrdering: ['question', 'answer']
+          required: ["term", "definition"],
+          propertyOrdering: ["term", "definition"],
         },
       },
     },
@@ -95,19 +118,42 @@ async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
   } catch (e) {
     flashcards = [];
     console.error("Error parsing JSON response:", e);
+    if (originalTabId) {
+      try {
+        await browser.tabs.sendMessage(originalTabId, {
+          type: "SHOW_ERROR",
+          message: "The AI failed to generate the flashcards properly. Please try again.",
+        });
+      } catch (sendError) {
+        console.warn(
+          `Could not send parse error message to tab ${originalTabId}: ${sendError.message}`
+        );
+      }
+    }
+    return [];
   }
+  return flashcards;
+}
 
-  if (originalTabId) {
-    try {
-      await browser.tabs.sendMessage(originalTabId, {
-        type: "SHOW_SUCCESS",
-        message: "Flashcards generated! Check the console.",
-      });
-    } catch (error) {
-      console.warn(`Could not send success message to tab ${originalTabId}: ${error.message}`);
+async function showFlashcards(flashcards, originalTabId) {
+  try {
+    await browser.storage.local.set({ flashcards: flashcards });
+    await browser.tabs.create({
+      url: browser.runtime.getURL("flashcards.html"),
+    });
+  } catch (error) {
+    console.error("Error storing flashcards or opening new tab:", error);
+    if (originalTabId) {
+      try {
+        await browser.tabs.sendMessage(originalTabId, {
+          type: "SHOW_ERROR",
+          message: "Error displaying flashcards. Check background console.",
+        });
+      } catch (sendError) {
+        console.warn(
+          `Could not send storage/tab error message to tab ${originalTabId}: ${sendError.message}`
+        );
+      }
     }
   }
-  console.log("--- Generated Flashcards ---");
-  console.log(flashcards);
-  console.log("---------------------------------");
 }

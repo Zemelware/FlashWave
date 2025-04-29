@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>FlashWave Flashcards</title>
+    <link rel="stylesheet" href="flashcards.css" />
+  </head>
+  <body>
+    <div class="flashcard-container" id="flashcard-container">
+      <div class="instructions">Click the card to flip. Use arrows to navigate.</div>
+      <div id="loading-message">Loading flashcards...</div>
+
+      <template id="flashcard-template">
+        <div class="flashcard">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="flashcard-label">Term</div>
+              <div class="flashcard-content"></div>
+            </div>
+            <div class="flashcard-back">
+              <div class="flashcard-label">Definition</div>
+              <div class="flashcard-content"></div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <div class="nav-controls" id="nav-controls" style="display: none">
+      <button class="nav-btn" id="prev-btn" title="Previous" aria-label="Previous flashcard">
+        &#8592;
+      </button>
+      <span class="counter" id="counter"></span>
+      <button class="nav-btn" id="next-btn" title="Next" aria-label="Next flashcard">
+        &#8594;
+      </button>
+    </div>
+
+    <script src="flashcards.js"></script>
+  </body>
+</html>

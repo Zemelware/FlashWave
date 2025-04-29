@@ -1,0 +1,136 @@
+body {
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.flashcard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  width: 100vw;
+}
+.flashcard {
+  width: 440px;
+  height: 280px;
+  perspective: 1400px;
+  margin: 0 auto 32px auto;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flashcard-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.4, 1.6, 0.6, 1);
+  transform-style: preserve-3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.flashcard.is-flipped .flashcard-inner {
+  transform: rotateY(180deg);
+}
+.flashcard-front,
+.flashcard-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px 0 rgba(60, 60, 120, 0.13), 0 1.5px 6px 0 rgba(60, 60, 120, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 24px;
+  font-size: 1.18rem;
+  color: #22223b;
+  box-sizing: border-box;
+}
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: #f1f5ff;
+}
+.flashcard-label {
+  font-size: 0.95em;
+  color: #6366f1;
+  font-weight: 600;
+  margin-bottom: 10px;
+  letter-spacing: 0.04em;
+}
+.flashcard-content {
+  font-size: 1.18em;
+  font-weight: 500;
+  text-align: center;
+  word-break: break-word;
+}
+.nav-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 8px;
+}
+.nav-btn {
+  background: #6366f1;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 1.7em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(60, 60, 120, 0.1);
+  user-select: none;
+}
+.nav-btn:disabled {
+  background: #c7d2fe;
+  color: #a5b4fc;
+  cursor: not-allowed;
+}
+.counter {
+  font-size: 1.1em;
+  color: #6366f1;
+  font-weight: 500;
+  margin: 0 8px;
+  letter-spacing: 0.03em;
+}
+.no-flashcards {
+  color: #b91c1c;
+  font-size: 1.2em;
+  margin-top: 40px;
+  text-align: center;
+}
+.instructions {
+  color: #64748b;
+  font-size: 1em;
+  margin-bottom: 18px;
+  text-align: center;
+}
+@media (max-width: 500px) {
+  .flashcard {
+    width: 98vw;
+    height: 220px;
+  }
+  .flashcard-container {
+    min-height: 40vh;
+  }
+}
