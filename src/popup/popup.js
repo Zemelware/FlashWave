@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const apiKeyInput = document.getElementById("apiKey");
   const saveButton = document.getElementById("save-button");
   const saveStatus = document.getElementById("save-status");
+  const openFlashcardsButton = document.getElementById("open-flashcards-button");
 
   // Load the saved API key when the popup opens
   browser.storage.sync.get(["apiKey"]).then((result) => {
@@ -23,5 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 5000);
       }
     });
+  });
+
+  openFlashcardsButton.addEventListener("click", () => {
+    browser.tabs.create({ url: browser.runtime.getURL("dist/flashcards/flashcards.html") });
   });
 });

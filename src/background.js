@@ -37,9 +37,9 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
       return;
     }
 
-    let flashcards;
+    let generatedData;
     try {
-      flashcards = await generateFlashcards({
+      generatedData = await generateFlashcards({
         selectedText: info.selectionText,
         apiKey: apiKey,
         originalTabId: originalTabId,
@@ -58,23 +58,16 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
           );
         }
       }
+      return;
     }
 
-    if (flashcards && flashcards.length > 0) {
-      showFlashcards(flashcards, originalTabId);
+    if (generatedData && generatedData.flashcards.length > 0) {
+      await saveAndShowFlashcards(generatedData.setName, generatedData.flashcards, originalTabId);
     } else {
-      if (originalTabId) {
-        try {
-          await browser.tabs.sendMessage(originalTabId, {
-            type: "SHOW_INFO",
-            message: "No flashcards were generated from the selected text.",
-          });
-        } catch (sendError) {
-          console.warn(
-            `Could not send 'no flashcards' message to tab ${originalTabId}: ${sendError.message}`
-          );
-        }
-      }
+      await browser.tabs.sendMessage(originalTabId, {
+        type: "SHOW_INFO",
+        message: "No flashcards were generated from the selected text.",
+      });
     }
   }
 });
@@ -85,7 +78,7 @@ async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
   if (!selectedText) throw new Error("Selected text is missing.");
   const genAI = new GoogleGenAI({ apiKey });
   const prompt = `Generate flashcards based on the following content.\n\n<content>\n${selectedText}\n</content>`;
-  const systemMessage = `You are a professional flash card generator. You help students study by generating flash cards based on their study content.\nAlways create an exhaustive list of flashcards that will prepare the user well for a test/exam. Make sure to include all important concepts and terms in the flashcards.`;
+  const systemMessage = `You are a professional flash card generator. You help students study by generating flash cards based on their study content.\nAlways create an exhaustive list of flashcards that will prepare the user well for a test/exam. Make sure to include all important concepts and terms in the flashcards. Also generate a concise, descriptive name for the flashcard set.`;
 
   const result = await genAI.models.generateContent({
     // model: "gemini-2.5-flash-preview-04-17",
@@ -95,28 +88,42 @@ async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
       systemInstruction: systemMessage,
       responseMimeType: "application/json",
       responseSchema: {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            term: { type: Type.STRING, description: "Flashcard term (front)", nullable: false },
-            definition: {
-              type: Type.STRING,
-              description: "Flashcard definition (back)",
-              nullable: false,
+        type: Type.OBJECT,
+        properties: {
+          setName: {
+            type: Type.STRING,
+            description: "A concise name for the flashcard set.",
+            nullable: false,
+          },
+          flashcards: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                term: { type: Type.STRING, description: "Flashcard term (front)", nullable: false },
+                definition: {
+                  type: Type.STRING,
+                  description: "Flashcard definition (back)",
+                  nullable: false,
+                },
+              },
+              required: ["term", "definition"],
+              propertyOrdering: ["term", "definition"],
             },
           },
-          required: ["term", "definition"],
-          propertyOrdering: ["term", "definition"],
         },
+        required: ["setName", "flashcards"],
+        propertyOrdering: ["setName", "flashcards"],
       },
     },
   });
-  let flashcards;
+  let responseData;
   try {
-    flashcards = JSON.parse(result.text);
+    responseData = JSON.parse(result.text);
+    if (!responseData || !responseData.flashcards || !responseData.setName) {
+      throw new Error("Invalid response structure from AI.");
+    }
   } catch (e) {
-    flashcards = [];
     console.error("Error parsing JSON response:", e);
     if (originalTabId) {
       try {
@@ -130,30 +137,38 @@ async function generateFlashcards({ selectedText, apiKey, originalTabId }) {
         );
       }
     }
-    return [];
+    return null;
   }
-  return flashcards;
+  return responseData;
 }
 
-async function showFlashcards(flashcards, originalTabId) {
+async function saveAndShowFlashcards(setName, flashcards, originalTabId) {
   try {
-    await browser.storage.local.set({ flashcards: flashcards });
+    const storageResult = await browser.storage.local.get("flashcardSets");
+    const allSets = storageResult.flashcardSets || {};
+
+    let finalSetName = setName;
+    let counter = 1;
+    // Check if the initial name exists and find the next available numbered name
+    while (allSets.hasOwnProperty(finalSetName)) {
+      finalSetName = `${setName} (${counter})`;
+      counter++;
+    }
+
+    allSets[finalSetName] = flashcards;
+
+    await browser.storage.local.set({ flashcardSets: allSets });
+
     await browser.tabs.create({
       url: browser.runtime.getURL("dist/flashcards/flashcards.html"),
     });
   } catch (error) {
     console.error("Error storing flashcards or opening new tab:", error);
     if (originalTabId) {
-      try {
-        await browser.tabs.sendMessage(originalTabId, {
-          type: "SHOW_ERROR",
-          message: "Error displaying flashcards. Check background console.",
-        });
-      } catch (sendError) {
-        console.warn(
-          `Could not send storage/tab error message to tab ${originalTabId}: ${sendError.message}`
-        );
-      }
+      await browser.tabs.sendMessage(originalTabId, {
+        type: "SHOW_ERROR",
+        message: "Error saving or displaying flashcards. Check background console.",
+      });
     }
   }
 }

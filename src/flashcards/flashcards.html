@@ -6,24 +6,36 @@
     <link rel="stylesheet" href="flashcards.css" />
   </head>
   <body>
-    <div class="flashcard-container" id="flashcard-container">
-      <div class="instructions">Click the card to flip. Use arrows to navigate.</div>
-      <div id="loading-message">Loading flashcards...</div>
+    <h1>FlashWave Flashcards</h1>
 
-      <template id="flashcard-template">
-        <div class="flashcard">
-          <div class="flashcard-inner">
-            <div class="flashcard-front">
-              <div class="flashcard-label">Term</div>
-              <div class="flashcard-content"></div>
-            </div>
-            <div class="flashcard-back">
-              <div class="flashcard-label">Definition</div>
-              <div class="flashcard-content"></div>
-            </div>
+    <div class="set-selection-container">
+      <label for="set-select">Select a Set:</label>
+      <select id="set-select">
+        <option value="">-- Select a Set --</option>
+      </select>
+      <button id="delete-set-button" style="margin-left: 10px" disabled>Delete Selected Set</button>
+    </div>
+
+    <template id="flashcard-template">
+      <div class="flashcard">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">
+            <div class="flashcard-label">Term</div>
+            <div class="flashcard-content"></div>
+          </div>
+          <div class="flashcard-back">
+            <div class="flashcard-label">Definition</div>
+            <div class="flashcard-content"></div>
           </div>
         </div>
-      </template>
+      </div>
+    </template>
+
+    <div class="instructions" style="text-align: center; margin-bottom: 15px; display: none">
+      Click the card to flip. Use arrows to navigate.
+    </div>
+
+    <div class="flashcard-container" id="flashcard-container" style="display: none">
     </div>
 
     <div class="nav-controls" id="nav-controls" style="display: none">

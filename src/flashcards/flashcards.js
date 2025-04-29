@@ -1,81 +1,180 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const setSelect = document.getElementById("set-select");
+  const deleteSetButton = document.getElementById("delete-set-button");
   const container = document.getElementById("flashcard-container");
-  const loadingMessage = document.getElementById("loading-message");
   const navControls = document.getElementById("nav-controls");
   const prevBtn = document.getElementById("prev-btn");
   const nextBtn = document.getElementById("next-btn");
   const counter = document.getElementById("counter");
+  const instructionsDiv = document.querySelector(".instructions");
 
-  let flashcards = [];
+  let allSets = {};
+  let currentFlashcards = [];
   let currentIndex = 0;
-  let cardElement = null;
+  let currentCardElement = null;
 
   function showFlashcard(index) {
-    if (cardElement) {
-      cardElement.remove(); // Remove the DOM element of the previous card
+    if (currentCardElement) {
+      currentCardElement.remove(); // Remove the DOM element of the previous card
     }
-    cardElement = createFlashcardElement(flashcards[index]);
-    container.appendChild(cardElement);
-    updateNav();
+    if (currentFlashcards && currentFlashcards[index]) {
+      currentCardElement = createFlashcardElement(currentFlashcards[index]);
+      // Clear previous content (like 'Select a set' message) before adding card
+      const existingMessages = container.querySelectorAll(".no-flashcards, .instructions");
+      existingMessages.forEach((msg) => msg.remove());
+      container.appendChild(currentCardElement);
+      updateNav();
+    } else {
+      console.error(
+        "Attempted to show flashcard at invalid index or with no flashcards loaded:",
+        index
+      );
+      clearFlashcardDisplay(); // Clear display if something went wrong
+    }
   }
 
   function updateNav() {
-    counter.textContent = `${currentIndex + 1} / ${flashcards.length}`;
-    prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex === flashcards.length - 1;
+    if (currentFlashcards.length > 0) {
+      counter.textContent = `${currentIndex + 1} / ${currentFlashcards.length}`;
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === currentFlashcards.length - 1;
+      navControls.style.display = "flex";
+    } else if (navControls) {
+      navControls.style.display = "none"; // Hide nav if no cards
+    }
   }
 
+  function createFlashcardElement(cardData) {
+    const template = document.getElementById("flashcard-template");
+    const card = template.content.firstElementChild.cloneNode(true);
+
+    card.querySelector(".flashcard-front .flashcard-content").textContent = cardData.term;
+    card.querySelector(".flashcard-back .flashcard-content").textContent = cardData.definition;
+
+    card.addEventListener("click", () => {
+      card.classList.toggle("is-flipped");
+    });
+
+    return card;
+  }
+
+  function clearFlashcardDisplay() {
+    if (currentCardElement) {
+      currentCardElement.remove();
+      currentCardElement = null;
+    }
+    // Remove any existing cards or messages
+    while (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+    container.style.display = "block";
+    instructionsDiv.style.display = "none";
+    navControls.style.display = "none";
+    deleteSetButton.disabled = true;
+    currentIndex = 0;
+    currentFlashcards = [];
+  }
+
+  // --- Event Listeners ---
   prevBtn.addEventListener("click", () => {
     if (currentIndex > 0) {
       currentIndex--;
       showFlashcard(currentIndex);
     }
   });
+
   nextBtn.addEventListener("click", () => {
-    if (currentIndex < flashcards.length - 1) {
+    if (currentIndex < currentFlashcards.length - 1) {
       currentIndex++;
       showFlashcard(currentIndex);
     }
   });
 
-  browser.storage.local
-    .get("flashcards")
-    .then((result) => {
-      flashcards = result.flashcards || [];
-      if (loadingMessage) loadingMessage.remove();
-      if (flashcards.length > 0) {
-        navControls.style.display = "flex";
-        showFlashcard(currentIndex);
-        browser.storage.local.remove("flashcards");
-      } else {
-        navControls.style.display = "none";
-        const noCardsMessage = document.createElement("p");
-        noCardsMessage.textContent = "No flashcards were generated or found.";
-        noCardsMessage.className = "no-flashcards";
-        container.appendChild(noCardsMessage);
-      }
-    })
-    .catch((error) => {
-      if (loadingMessage) loadingMessage.textContent = "Error loading flashcards.";
-      navControls.style.display = "none";
-      const errorMessage = document.createElement("p");
-      errorMessage.textContent = "Error loading flashcards.";
-      errorMessage.className = "no-flashcards";
-      errorMessage.style.color = "red";
-      container.appendChild(errorMessage);
-    });
-});
-
-function createFlashcardElement(cardData) {
-  const template = document.getElementById("flashcard-template");
-  const card = template.content.firstElementChild.cloneNode(true);
-
-  card.querySelector(".flashcard-front .flashcard-content").textContent = cardData.term;
-  card.querySelector(".flashcard-back .flashcard-content").textContent = cardData.definition;
-
-  card.addEventListener("click", () => {
-    card.classList.toggle("is-flipped");
+  setSelect.addEventListener("change", () => {
+    const selectedSetName = setSelect.value;
+    if (selectedSetName && allSets[selectedSetName]) {
+      currentFlashcards = allSets[selectedSetName];
+      currentIndex = 0;
+      container.style.display = "block";
+      instructionsDiv.style.display = "block";
+      deleteSetButton.disabled = false;
+      showFlashcard(currentIndex);
+    } else {
+      clearFlashcardDisplay();
+    }
   });
 
-  return card;
-}
+  deleteSetButton.addEventListener("click", async () => {
+    const selectedSetName = setSelect.value;
+    if (selectedSetName && allSets[selectedSetName]) {
+      if (confirm(`Are you sure you want to delete the set "${selectedSetName}"?`)) {
+        delete allSets[selectedSetName];
+
+        // Update storage
+        try {
+          await browser.storage.local.set({ flashcardSets: allSets });
+          console.log(`Set "${selectedSetName}" deleted.`);
+
+          // Remove from dropdown
+          const optionToRemove = setSelect.querySelector(`option[value="${selectedSetName}"]`);
+          if (optionToRemove) {
+            optionToRemove.remove();
+          }
+
+          setSelect.value = ""; // Go back to default option
+          clearFlashcardDisplay();
+        } catch (error) {
+          console.error("Error deleting flashcard set from storage:", error);
+          alert("Failed to delete the flashcard set. Please try again.");
+        }
+      }
+    }
+  });
+
+  // --- Load Sets on Initialization ---
+  async function loadFlashcardSets() {
+    try {
+      const result = await browser.storage.local.get("flashcardSets");
+      allSets = result.flashcardSets || {};
+
+      // Clear existing options except the default
+      while (setSelect.options.length > 1) {
+        setSelect.remove(1);
+      }
+
+      const setNames = Object.keys(allSets);
+      if (setNames.length > 0) {
+        setNames.sort().forEach((setName) => {
+          // Sort names alphabetically
+          const option = document.createElement("option");
+          option.value = setName;
+          option.textContent = setName;
+          setSelect.appendChild(option);
+        });
+        clearFlashcardDisplay();
+      } else {
+        // No sets found
+        if (container) {
+          container.innerHTML =
+            '<p class="no-flashcards">No flashcard sets found. Create some by selecting text on a webpage and using the right-click menu!</p>';
+          container.style.display = "block";
+        }
+        instructionsDiv.style.display = "none";
+        navControls.style.display = "none";
+        deleteSetButton.disabled = true;
+      }
+    } catch (error) {
+      console.error("Error loading flashcard sets:", error);
+      if (container) {
+        container.innerHTML =
+          '<p class="no-flashcards" style="color: red;">Error loading flashcard sets.</p>';
+        container.style.display = "block";
+      }
+      instructionsDiv.style.display = "none";
+      navControls.style.display = "none";
+      deleteSetButton.disabled = true;
+    }
+  }
+
+  loadFlashcardSets();
+});
