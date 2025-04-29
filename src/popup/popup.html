@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>FlashWave Settings</title>
+    <title>FlashWave</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h3>FlashWave Settings</h3>
+    <h3>FlashWave</h3>
+
+    <button id="open-flashcards-btn" class="btn margin-bottom">Open Flashcards</button>
+
+    <hr class="margin-bottom" style="color: lightgrey" />
 
     <label for="apiKey">Gemini API Key:</label>
     <input type="text" id="apiKey" placeholder="Enter your API key" />
 
-    <button id="save-button">Save Key</button>
-    <div id="save-status" style="margin-top: 8px; color: green; font-size: 0.95em"></div>
-
-    <button id="open-flashcards-button" style="margin-top: 10px">Open Flashcards</button>
+    <button id="save-button" class="btn margin-top">Save Key</button>
+    <div id="save-status" class="status-message margin-top-sm"></div>
 
     <script src="popup.js"></script>
   </body>

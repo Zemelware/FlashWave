@@ -46,18 +46,12 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
       });
     } catch (error) {
       console.error("Error generating flashcards in background:", error);
-      if (originalTabId) {
-        try {
-          await browser.tabs.sendMessage(originalTabId, {
-            type: "SHOW_ERROR",
-            message: "There was an error generating flashcards.",
-          });
-        } catch (sendError) {
-          console.warn(
-            `Could not send error message to tab ${originalTabId}: ${sendError.message}`
-          );
-        }
-      }
+      await browser.tabs.sendMessage(originalTabId, {
+        type: "SHOW_ERROR",
+        message:
+          "There was an error calling the Gemini API when generating flashcards. Full error:\n\n" +
+          error.message.error.message,
+      });
       return;
     }
 

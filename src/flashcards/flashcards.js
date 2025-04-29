@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // No sets found
         if (container) {
           container.innerHTML =
-            '<p class="no-flashcards">No flashcard sets found. Create some by selecting text on a webpage and using the right-click menu!</p>';
+            '<p class="no-flashcards">No flashcards found. Create some by selecting text on a webpage and using the right-click menu!</p>';
           container.style.display = "block";
         }
         instructionsDiv.style.display = "none";

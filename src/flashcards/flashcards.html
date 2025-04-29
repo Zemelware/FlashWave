@@ -6,14 +6,13 @@
     <link rel="stylesheet" href="flashcards.css" />
   </head>
   <body>
-    <h1>FlashWave Flashcards</h1>
+    <h1 style="padding-top: 10vh">FlashWave Flashcards</h1>
 
-    <div class="set-selection-container">
-      <label for="set-select">Select a Set:</label>
+    <div class="set-controls">
       <select id="set-select">
         <option value="">-- Select a Set --</option>
       </select>
-      <button id="delete-set-button" style="margin-left: 10px" disabled>Delete Selected Set</button>
+      <button id="delete-set-button" class="btn margin-top" disabled>Delete Selected Set</button>
     </div>
 
     <template id="flashcard-template">
@@ -31,12 +30,11 @@
       </div>
     </template>
 
-    <div class="instructions" style="text-align: center; margin-bottom: 15px; display: none">
+    <div class="instructions margin-top-xl margin-bottom-lg">
       Click the card to flip. Use arrows to navigate.
     </div>
 
-    <div class="flashcard-container" id="flashcard-container" style="display: none">
-    </div>
+    <div class="flashcard-container" id="flashcard-container" style="display: none"></div>
 
     <div class="nav-controls" id="nav-controls" style="display: none">
       <button class="nav-btn" id="prev-btn" title="Previous" aria-label="Previous flashcard">

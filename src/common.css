@@ -1,0 +1,77 @@
+:root {
+  --font-family: sans-serif;
+  --spacing-sm: 8px;
+  --spacing: 10px;
+  --spacing-lg: 16px;
+  --spacing-xl: 32px;
+  --btn-bg: #6366f1;
+  --btn-color: #fff;
+  --btn-bg-hover: #4f46e5;
+  --input-border: #ccc;
+}
+
+/* Input and select styling */
+input[type="text"],
+select {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  font-size: 1em;
+  font-family: inherit;
+  background: #fff;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+input[type="text"]:focus,
+select:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+}
+
+/* Button styling */
+.btn {
+  display: inline-block;
+  padding: var(--spacing-sm) var(--spacing);
+  background: var(--btn-bg);
+  color: var(--btn-color);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 0.95em;
+  text-align: center;
+}
+.btn:hover:not(:disabled) {
+  background: var(--btn-bg-hover);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Spacing utility classes */
+.margin-top-xl {
+  margin-top: var(--spacing-xl);
+}
+.margin-top-lg {
+  margin-top: var(--spacing-lg);
+}
+.margin-top {
+  margin-top: var(--spacing);
+}
+.margin-top-sm {
+  margin-top: var(--spacing-sm);
+}
+.margin-bottom-xl {
+  margin-bottom: var(--spacing-xl);
+}
+.margin-bottom-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.margin-bottom {
+  margin-bottom: var(--spacing);
+}
+.margin-bottom-sm {
+  margin-bottom: var(--spacing-sm);
+}

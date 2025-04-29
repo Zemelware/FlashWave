@@ -1,27 +1,41 @@
+@import "../common.css";
+
+:root {
+  --font-family-ui: "Segoe UI", "Roboto", Arial, sans-serif;
+  --primary-color: #6366f1;
+  --secondary-bg: #f1f5ff;
+  --card-bg: #fff;
+  --gradient-start: #f8fafc;
+  --gradient-end: #e0e7ff;
+  --text-color: #22223b;
+  --label-color: #6366f1;
+  --instruction-color: #64748b;
+  --danger-color: #b91c1c;
+  --shadow-main: rgba(60, 60, 120, 0.13);
+  --shadow-alt: rgba(60, 60, 120, 0.08);
+}
+
 body {
-  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
-  font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+  background: linear-gradient(120deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  font-family: var(--font-family-ui);
   margin: 0;
   padding: 0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
 }
+
 .flashcard-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  width: 100vw;
 }
 .flashcard {
   width: 440px;
   height: 280px;
   perspective: 1400px;
-  margin: 0 auto 32px auto;
+  margin: 0 auto;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -49,27 +63,27 @@ body {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 18px;
-  box-shadow: 0 6px 32px 0 rgba(60, 60, 120, 0.13), 0 1.5px 6px 0 rgba(60, 60, 120, 0.08);
+  box-shadow: 0 6px 32px 0 var(--shadow-main), 0 1.5px 6px 0 var(--shadow-alt);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 32px 24px;
+  padding: var(--spacing-lg) var(--spacing);
   font-size: 1.18rem;
-  color: #22223b;
+  color: var(--text-color);
   box-sizing: border-box;
 }
 .flashcard-back {
   transform: rotateY(180deg);
-  background: #f1f5ff;
+  background: var(--secondary-bg);
 }
 .flashcard-label {
   font-size: 0.95em;
-  color: #6366f1;
+  color: var(--label-color);
   font-weight: 600;
-  margin-bottom: 10px;
+  margin-bottom: var(--spacing-sm);
   letter-spacing: 0.04em;
 }
 .flashcard-content {
@@ -82,11 +96,11 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 32px;
-  margin-top: 8px;
+  gap: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
 }
 .nav-btn {
-  background: #6366f1;
+  background: var(--primary-color);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -108,21 +122,20 @@ body {
 }
 .counter {
   font-size: 1.1em;
-  color: #6366f1;
+  color: var(--primary-color);
   font-weight: 500;
-  margin: 0 8px;
+  margin: 0 var(--spacing-sm);
   letter-spacing: 0.03em;
 }
 .no-flashcards {
-  color: #b91c1c;
+  color: var(--danger-color);
   font-size: 1.2em;
-  margin-top: 40px;
+  margin-top: var(--spacing-lg);
   text-align: center;
 }
 .instructions {
-  color: #64748b;
+  color: var(--instruction-color);
   font-size: 1em;
-  margin-bottom: 18px;
   text-align: center;
 }
 @media (max-width: 500px) {
