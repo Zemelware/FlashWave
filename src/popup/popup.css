@@ -14,3 +14,13 @@ label {
   font-size: 0.9em;
   color: green;
 }
+
+input {
+  padding: 5px var(--spacing);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+}
+input:focus {
+  outline: none;
+  border-color: var(--btn-bg);
+}
