@@ -1,4 +1,11 @@
 import browser from "webextension-polyfill";
+import {
+  createCardEntry,
+  showMessage,
+  collectFlashcards,
+  validateFlashcards,
+  getNonCollidingSetName,
+} from "./flashcard-form.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const setSelect = document.getElementById("set-select");
@@ -28,23 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
     deleteSetBtn.disabled = true;
   }
 
-  function createCardEntry(term = "", definition = "") {
-    const node = cardEntryTemplate.content.firstElementChild.cloneNode(true);
-    const termInput = node.querySelector(".card-term");
-    const defInput = node.querySelector(".card-definition");
-    termInput.value = term;
-    defInput.value = definition;
-    node.querySelector(".delete-card-btn").addEventListener("click", () => {
-      node.remove();
-    });
-    return node;
-  }
-
-  function showMessage(msg, type) {
-    messageDiv.textContent = msg;
-    messageDiv.className = type;
-  }
-
   async function loadSelectedSet() {
     messageDiv.textContent = "";
     const setName = setSelect.value;
@@ -57,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setNameInput.value = setName;
     cardsContainer.innerHTML = "";
     cards.forEach(({ term, definition }) => {
-      cardsContainer.appendChild(createCardEntry(term, definition));
+      cardsContainer.appendChild(createCardEntry(cardEntryTemplate, term, definition));
     });
     editForm.style.display = "";
   }
@@ -82,17 +72,16 @@ document.addEventListener("DOMContentLoaded", () => {
       const allSets = stored.flashcardSets || {};
       delete allSets[setName];
       await browser.storage.local.set({ flashcardSets: allSets });
-      showMessage(`Flashcard set "${setName}" deleted.`, "success");
+      showMessage(messageDiv, `Flashcard set "${setName}" deleted.`, "success");
       // Refresh dropdown and hide form
       await loadSets();
       editForm.style.display = "none";
-      browser.runtime.sendMessage({ type: "FLASHCARDS_UPDATED" });
     }
   });
 
   // Add new card entry
   addCardBtn.addEventListener("click", () => {
-    cardsContainer.appendChild(createCardEntry());
+    cardsContainer.appendChild(createCardEntry(cardEntryTemplate));
   });
 
   // Handle form submission for updating set
@@ -100,27 +89,13 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     messageDiv.textContent = "";
     const newName = setNameInput.value.trim();
-    const entries = Array.from(cardsContainer.querySelectorAll(" .card-entry"));
-    const flashcards = [];
-    if (!newName) {
-      showMessage("Please enter a set name.", "error");
+    let flashcards;
+    try {
+      flashcards = collectFlashcards(cardsContainer);
+      validateFlashcards(newName, flashcards);
+    } catch (err) {
+      showMessage(messageDiv, err.message, "error");
       return;
-    }
-    if (entries.length === 0) {
-      showMessage("Please add at least one flashcard.", "error");
-      return;
-    }
-    // Gather terms and definitions
-    for (let i = 0; i < entries.length; i++) {
-      const termInput = entries[i].querySelector(".card-term");
-      const defInput = entries[i].querySelector(".card-definition");
-      const term = termInput.value.trim();
-      const definition = defInput.value.trim();
-      if (!term || !definition) {
-        showMessage(`Card ${i + 1}: both term and definition are required.`, "error");
-        return;
-      }
-      flashcards.push({ term, definition });
     }
 
     try {
@@ -128,25 +103,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const allSets = stored.flashcardSets || {};
       let finalName = newName;
       if (newName !== originalName) {
-        let counter = 1;
-        while (allSets.hasOwnProperty(finalName)) {
-          finalName = `${newName} (${counter})`;
-          counter++;
-        }
+        finalName = getNonCollidingSetName(allSets, newName);
         // Remove old key
         delete allSets[originalName];
       }
       allSets[finalName] = flashcards;
       await browser.storage.local.set({ flashcardSets: allSets });
-      showMessage(`Flashcard set "${finalName}" updated successfully.`, "success");
+      showMessage(messageDiv, `Flashcard set "${finalName}" updated successfully.`, "success");
       originalName = finalName;
       // Refresh dropdown and keep current selection
       await loadSets();
       setSelect.value = finalName;
-      browser.runtime.sendMessage({ type: "FLASHCARDS_UPDATED" });
     } catch (err) {
       console.error("Error updating flashcard set:", err);
-      showMessage("Error updating flashcard set. Please try again.", "error");
+      showMessage(messageDiv, "Error updating flashcard set. Please try again.", "error");
     }
   });
 
