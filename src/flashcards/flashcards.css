@@ -5,6 +5,7 @@
   --primary-color: #6366f1;
   --secondary-bg: #f1f5ff;
   --card-bg: #fff;
+  --card-corner-radius: 18px;
   --gradient-start: #f8fafc;
   --gradient-end: #e0e7ff;
   --text-color: #22223b;
@@ -70,7 +71,7 @@ body {
   height: 100%;
   backface-visibility: hidden;
   background: var(--card-bg);
-  border-radius: 18px;
+  border-radius: var(--card-corner-radius);
   box-shadow: 0 6px 32px 0 var(--shadow-main), 0 1.5px 6px 0 var(--shadow-alt);
   display: flex;
   flex-direction: column;

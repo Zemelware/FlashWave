@@ -23,3 +23,45 @@ label {
 .card-definition {
   margin-bottom: 5px;
 }
+
+.card-entry-card {
+  position: relative;
+  background: var(--card-bg);
+  border-radius: var(--card-corner-radius);
+  box-shadow: 0 4px 16px 0 var(--shadow-main, rgba(60, 60, 120, 0.13));
+  padding: 32px 24px 24px 24px;
+  margin-bottom: var(--spacing-lg);
+  max-width: 480px;
+  min-width: 260px;
+}
+
+.card-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+}
+
+.delete-card-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f4f6;
+  color: #b91c1c;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 4px 0 rgba(60, 60, 120, 0.08);
+  transition: background 0.15s;
+  z-index: 1;
+}
+.delete-card-btn:hover {
+  background: #fee2e2;
+  color: #991b1b;
+}

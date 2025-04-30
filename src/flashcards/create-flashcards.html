@@ -23,10 +23,12 @@
         <h3 class="margin-top-xl margin-bottom">Add flashcards to the set below</h3>
 
         <template id="card-entry-template">
-          <div class="card-entry">
-            <input type="text" class="card-term" placeholder="Term" required />
-            <input type="text" class="card-definition" placeholder="Definition" required />
-            <button type="button" class="delete-card-btn btn margin-bottom">&times;</button>
+          <div class="card-entry-card">
+            <button type="button" class="delete-card-btn" title="Delete card">&times;</button>
+            <div class="card-entry">
+              <input type="text" class="card-term" placeholder="Term" required />
+              <input type="text" class="card-definition" placeholder="Definition" required />
+            </div>
           </div>
         </template>
 

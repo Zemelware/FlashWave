@@ -104,7 +104,6 @@ select:focus {
   text-decoration: none;
   color: var(--text-color);
   font-weight: 500;
-  padding: 10px 0px;
   display: block;
   text-align: center;
 }
