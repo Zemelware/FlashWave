@@ -151,12 +151,13 @@ body {
   max-width: 600px;
   min-width: 300px;
 }
-@media (max-width: 500px) {
-  .flashcard {
-    width: 98vw;
-    height: 220px;
-  }
-  .flashcard-container {
-    min-height: 40vh;
-  }
+.shuffle-toggle-label {
+  cursor: pointer;
+}
+#shuffle-toggle {
+  width: 15px;
+  height: 15px;
+  vertical-align: middle;
+  cursor: pointer;
+  accent-color: var(--primary-color);
 }

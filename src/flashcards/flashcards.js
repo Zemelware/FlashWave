@@ -2,6 +2,7 @@ import browser from "webextension-polyfill";
 
 document.addEventListener("DOMContentLoaded", () => {
   const setSelect = document.getElementById("set-select");
+  const shuffleToggle = document.getElementById("shuffle-toggle");
   const container = document.getElementById("flashcard-container");
   const navControls = document.getElementById("nav-controls");
   const prevBtn = document.getElementById("prev-btn");
@@ -13,6 +14,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentFlashcards = [];
   let currentIndex = 0;
   let currentCardElement = null;
+  let isShuffled = false;
+  let originalOrder = [];
 
   function showFlashcard(index) {
     if (currentCardElement) {
@@ -75,6 +78,22 @@ document.addEventListener("DOMContentLoaded", () => {
     currentFlashcards = [];
   }
 
+  function shuffleArray(arr) {
+    // Fisher-Yates shuffle
+    const a = arr.slice(); // Create a copy to avoid modifying the original array
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function resetShuffle() {
+    shuffleToggle.checked = false;
+    isShuffled = false;
+    originalOrder = [];
+  }
+
   // --- Event Listeners ---
   prevBtn.addEventListener("click", () => {
     if (currentIndex > 0) {
@@ -93,13 +112,31 @@ document.addEventListener("DOMContentLoaded", () => {
   setSelect.addEventListener("change", () => {
     const selectedSetName = setSelect.value;
     if (selectedSetName && allSets[selectedSetName]) {
-      currentFlashcards = allSets[selectedSetName];
+      originalOrder = allSets[selectedSetName].slice();
+      if (isShuffled) {
+        currentFlashcards = shuffleArray(originalOrder);
+      } else {
+        currentFlashcards = originalOrder.slice();
+      }
       currentIndex = 0;
       container.style.display = "block";
       instructionsDiv.style.display = "block";
       showFlashcard(currentIndex);
     } else {
       clearFlashcardDisplay();
+    }
+  });
+
+  shuffleToggle.addEventListener("change", () => {
+    isShuffled = shuffleToggle.checked;
+    if (originalOrder.length > 0) {
+      if (isShuffled) {
+        currentFlashcards = shuffleArray(originalOrder);
+      } else {
+        currentFlashcards = originalOrder.slice();
+      }
+      currentIndex = 0;
+      showFlashcard(currentIndex);
     }
   });
 
@@ -124,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
           setSelect.appendChild(option);
         });
         clearFlashcardDisplay();
+        resetShuffle();
       } else {
         // No sets found
         if (container) {
@@ -133,6 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         instructionsDiv.style.display = "none";
         navControls.style.display = "none";
+        resetShuffle();
       }
     } catch (error) {
       console.error("Error loading flashcard sets:", error);
@@ -143,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       instructionsDiv.style.display = "none";
       navControls.style.display = "none";
+      resetShuffle();
     }
   }
 
