@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Create Flashcard Set</title>
+    <title>Edit Flashcard Set</title>
     <link rel="stylesheet" href="create-flashcards.css" />
   </head>
   <body>
@@ -10,27 +10,40 @@
       <nav>
         <ul>
           <li><a href="flashcards.html">View flashcards</a></li>
-          <li><a href="create-flashcards.html" class="active">Create flashcards</a></li>
-          <li><a href="edit-flashcards.html">Edit flashcards</a></li>
+          <li><a href="create-flashcards.html">Create flashcards</a></li>
+          <li><a href="edit-flashcards.html" class="active">Edit flashcards</a></li>
         </ul>
       </nav>
     </div>
+
     <div class="main-content">
-      <h1>Create Flashcard Set</h1>
-      <form id="create-form">
+      <h1>Edit Flashcard Set</h1>
+
+      <div class="set-controls">
+        <select id="set-select">
+          <option value="">-- Select a Set --</option>
+        </select>
+        <!-- Load Selected Set button removed -->
+        <button id="delete-set-button" class="btn btn-danger margin-top" disabled>
+          Delete Selected Set
+        </button>
+      </div>
+
+      <form id="edit-form" style="display: none" class="margin-top">
         <label for="set-name">Set Name</label>
         <input type="text" id="set-name" placeholder="Enter set name" required />
 
-        <h3 class="margin-top-xl margin-bottom">Add flashcards to the set below</h3>
+        <h3 class="margin-bottom">Edit flashcards below</h3>
 
         <template id="card-entry-template">
           <div class="card-entry-card">
             <button type="button" class="delete-card-btn" title="Delete card">
               <!-- x icon -->
               <svg viewBox="0 0 1024 1024">
-                <path d="M697.4 759.2l61.8-61.8L573.8 512l185.4-185.4-61.8-61.8L512 450.2 326.6 264.8l-61.8 61.8L450.2 512 264.8 697.4l61.8 61.8L512 573.8z"/>
+                <path
+                  d="M697.4 759.2l61.8-61.8L573.8 512l185.4-185.4-61.8-61.8L512 450.2 326.6 264.8l-61.8 61.8L450.2 512 264.8 697.4l61.8 61.8L512 573.8z"
+                />
               </svg>
-            </svg>
             </button>
             <div class="card-entry">
               <input type="text" class="card-term" placeholder="Term" required />
@@ -39,13 +52,13 @@
           </div>
         </template>
 
-        <!-- Dynamic list of card entries -->
         <div id="cards-container"></div>
         <button type="button" id="add-card-btn" class="btn margin-top-sm">Add Card</button>
-        <button type="submit" id="save-btn" class="btn btn-success margin-top">Save Set</button>
+        <button type="submit" id="save-btn" class="btn btn-success margin-top">Save Edits</button>
       </form>
       <div id="message"></div>
     </div>
-    <script src="create-flashcards.js"></script>
+
+    <script src="edit-flashcards.js"></script>
   </body>
 </html>
