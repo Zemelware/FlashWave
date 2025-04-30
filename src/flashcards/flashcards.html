@@ -47,11 +47,17 @@
 
       <div class="nav-controls" id="nav-controls" style="display: none">
         <button class="nav-btn" id="prev-btn" title="Previous" aria-label="Previous flashcard">
-          &#8592;
+          <!-- Left arrow -->
+           <svg width="100%" height="100%" viewBox="0 0 24 24">
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </button>
         <span class="counter" id="counter"></span>
         <button class="nav-btn" id="next-btn" title="Next" aria-label="Next flashcard">
-          &#8594;
+          <!-- Right arrow -->
+          <svg viewBox="0 0 24 24">
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </button>
       </div>
     </div>
