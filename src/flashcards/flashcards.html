@@ -6,46 +6,55 @@
     <link rel="stylesheet" href="flashcards.css" />
   </head>
   <body>
-    <h1 style="padding-top: 10vh">FlashWave Flashcards</h1>
-
-    <div class="set-controls">
-      <select id="set-select">
-        <option value="">-- Select a Set --</option>
-      </select>
-      <button id="delete-set-button" class="btn margin-top" disabled>Delete Selected Set</button>
+    <div class="sidebar">
+      <nav>
+        <ul>
+          <li><a href="flashcards.html" class="active">View flashcards</a></li>
+          <li><a href="create-flashcards.html">Create flashcards</a></li>
+        </ul>
+      </nav>
     </div>
+    <div class="main-content">
+      <h1>FlashWave Flashcards</h1>
 
-    <template id="flashcard-template">
-      <div class="flashcard">
-        <div class="flashcard-inner">
-          <div class="flashcard-front">
-            <div class="flashcard-label">Term</div>
-            <div class="flashcard-content"></div>
-          </div>
-          <div class="flashcard-back">
-            <div class="flashcard-label">Definition</div>
-            <div class="flashcard-content"></div>
+      <div class="set-controls">
+        <select id="set-select">
+          <option value="">-- Select a Set --</option>
+        </select>
+        <button id="delete-set-button" class="btn margin-top" disabled>Delete Selected Set</button>
+      </div>
+
+      <template id="flashcard-template">
+        <div class="flashcard">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <div class="flashcard-label">Term</div>
+              <div class="flashcard-content"></div>
+            </div>
+            <div class="flashcard-back">
+              <div class="flashcard-label">Definition</div>
+              <div class="flashcard-content"></div>
+            </div>
           </div>
         </div>
+      </template>
+
+      <div class="instructions margin-top-xl margin-bottom-lg">
+        Click the card to flip. Use arrows to navigate.
       </div>
-    </template>
 
-    <div class="instructions margin-top-xl margin-bottom-lg">
-      Click the card to flip. Use arrows to navigate.
+      <div class="flashcard-container" id="flashcard-container" style="display: none"></div>
+
+      <div class="nav-controls" id="nav-controls" style="display: none">
+        <button class="nav-btn" id="prev-btn" title="Previous" aria-label="Previous flashcard">
+          &#8592;
+        </button>
+        <span class="counter" id="counter"></span>
+        <button class="nav-btn" id="next-btn" title="Next" aria-label="Next flashcard">
+          &#8594;
+        </button>
+      </div>
     </div>
-
-    <div class="flashcard-container" id="flashcard-container" style="display: none"></div>
-
-    <div class="nav-controls" id="nav-controls" style="display: none">
-      <button class="nav-btn" id="prev-btn" title="Previous" aria-label="Previous flashcard">
-        &#8592;
-      </button>
-      <span class="counter" id="counter"></span>
-      <button class="nav-btn" id="next-btn" title="Next" aria-label="Next flashcard">
-        &#8594;
-      </button>
-    </div>
-
     <script src="flashcards.js"></script>
   </body>
 </html>

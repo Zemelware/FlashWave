@@ -1,0 +1,25 @@
+@import "flashcards.css";
+
+label {
+  display: block;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-color);
+}
+
+#message {
+  margin-top: var(--spacing-lg);
+  font-size: 1em;
+}
+
+#message.success {
+  color: green;
+}
+
+#message.error {
+  color: var(--danger-color);
+}
+
+.card-term,
+.card-definition {
+  margin-bottom: 5px;
+}

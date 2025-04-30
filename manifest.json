@@ -26,7 +26,15 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["dist/flashcards/flashcards.html", "dist/flashcards/flashcards.js", "dist/flashcards/flashcards.css"],
+      "resources": [
+        "dist/common.css",
+        "dist/flashcards/flashcards.html",
+        "dist/flashcards/flashcards.js",
+        "dist/flashcards/flashcards.css",
+        "dist/flashcards/create-flashcards.html",
+        "dist/flashcards/create-flashcards.js",
+        "dist/flashcards/create-flashcards.css"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

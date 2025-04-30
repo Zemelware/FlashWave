@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Flashcard Set</title>
+    <link rel="stylesheet" href="create-flashcards.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <nav>
+        <ul>
+          <li><a href="flashcards.html">View flashcards</a></li>
+          <li><a href="create-flashcards.html" class="active">Create flashcards</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="main-content">
+      <h1>Create Flashcard Set</h1>
+      <form id="create-form">
+        <label for="set-name">Set Name</label>
+        <input type="text" id="set-name" placeholder="Enter set name" required />
+
+        <h3 class="margin-top-xl margin-bottom">Add flashcards to the set below</h3>
+
+        <template id="card-entry-template">
+          <div class="card-entry">
+            <input type="text" class="card-term" placeholder="Term" required />
+            <input type="text" class="card-definition" placeholder="Definition" required />
+            <button type="button" class="delete-card-btn btn margin-bottom">&times;</button>
+          </div>
+        </template>
+
+        <!-- Dynamic list of card entries -->
+        <div id="cards-container"></div>
+        <button type="button" id="add-card-btn" class="btn margin-top-sm">Add Card</button>
+        <button type="submit" id="save-btn" class="btn margin-top">Save Set</button>
+      </form>
+      <div id="message"></div>
+    </div>
+    <script src="create-flashcards.js"></script>
+  </body>
+</html>

@@ -4,6 +4,7 @@
   "main": "background.js",
   "scripts": {
     "build": "node build.js",
+    "dev": "nodemon --watch src --watch build.js --ext js,css,html --exec \"npm run build\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
     "esbuild": "^0.25.3",
     "esbuild-plugin-copy": "^2.1.1",
     "glob": "^11.0.2",
+    "nodemon": "^3.1.10",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.1.4",
     "webextension-polyfill": "^0.12.0"
