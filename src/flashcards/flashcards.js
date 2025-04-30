@@ -2,7 +2,6 @@ import browser from "webextension-polyfill";
 
 document.addEventListener("DOMContentLoaded", () => {
   const setSelect = document.getElementById("set-select");
-  const deleteSetButton = document.getElementById("delete-set-button");
   const container = document.getElementById("flashcard-container");
   const navControls = document.getElementById("nav-controls");
   const prevBtn = document.getElementById("prev-btn");
@@ -72,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
     container.style.display = "block";
     instructionsDiv.style.display = "none";
     navControls.style.display = "none";
-    deleteSetButton.disabled = true;
     currentIndex = 0;
     currentFlashcards = [];
   }
@@ -99,37 +97,9 @@ document.addEventListener("DOMContentLoaded", () => {
       currentIndex = 0;
       container.style.display = "block";
       instructionsDiv.style.display = "block";
-      deleteSetButton.disabled = false;
       showFlashcard(currentIndex);
     } else {
       clearFlashcardDisplay();
-    }
-  });
-
-  deleteSetButton.addEventListener("click", async () => {
-    const selectedSetName = setSelect.value;
-    if (selectedSetName && allSets[selectedSetName]) {
-      if (confirm(`Are you sure you want to delete the set "${selectedSetName}"?`)) {
-        delete allSets[selectedSetName];
-
-        // Update storage
-        try {
-          await browser.storage.local.set({ flashcardSets: allSets });
-          console.log(`Set "${selectedSetName}" deleted.`);
-
-          // Remove from dropdown
-          const optionToRemove = setSelect.querySelector(`option[value="${selectedSetName}"]`);
-          if (optionToRemove) {
-            optionToRemove.remove();
-          }
-
-          setSelect.value = ""; // Go back to default option
-          clearFlashcardDisplay();
-        } catch (error) {
-          console.error("Error deleting flashcard set from storage:", error);
-          alert("Failed to delete the flashcard set. Please try again.");
-        }
-      }
     }
   });
 
@@ -163,7 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         instructionsDiv.style.display = "none";
         navControls.style.display = "none";
-        deleteSetButton.disabled = true;
       }
     } catch (error) {
       console.error("Error loading flashcard sets:", error);
@@ -174,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       instructionsDiv.style.display = "none";
       navControls.style.display = "none";
-      deleteSetButton.disabled = true;
     }
   }
 
