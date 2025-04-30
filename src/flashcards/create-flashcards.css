@@ -19,6 +19,11 @@ label {
   color: var(--danger-color);
 }
 
+#set-name {
+  max-width: 600px;
+  min-width: 300px;
+}
+
 .card-term,
 .card-definition {
   margin-bottom: 5px;
