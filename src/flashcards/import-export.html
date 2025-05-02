@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Import/Export Flashcard Sets</title>
+    <link rel="stylesheet" href="flashcards.css" />
+  </head>
+  <body>
+    <div class="sidebar">
+      <nav>
+        <ul>
+          <li><a href="flashcards.html">View flashcards</a></li>
+          <li><a href="create-flashcards.html">Create flashcards</a></li>
+          <li><a href="edit-flashcards.html">Edit flashcards</a></li>
+          <li><a href="import-export.html" class="active">Import/Export</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="main-content">
+      <h1>Import/Export Flashcard Sets</h1>
+
+      <section id="import-section">
+        <h2>Import Sets</h2>
+        <input type="file" id="import-input" multiple accept=".txt,.csv" />
+        <button id="import-btn" class="btn margin-top">Import Files</button>
+      </section>
+
+      <section id="export-section">
+        <h2>Export Sets</h2>
+        <em>Exports in a format compatible with Anki.</em>
+        <div id="export-list" class="margin-top-sm"></div>
+        <button id="export-btn" class="btn margin-top">Export Selected</button>
+      </section>
+
+      <div id="message"></div>
+    </div>
+    <script src="import-export.js"></script>
+  </body>
+</html>

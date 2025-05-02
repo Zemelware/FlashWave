@@ -162,13 +162,18 @@ body {
   max-width: 600px;
   min-width: 300px;
 }
+input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+  vertical-align: middle;
+}
 .shuffle-toggle-label {
   cursor: pointer;
 }
-#shuffle-toggle {
-  width: 15px;
-  height: 15px;
-  vertical-align: middle;
-  cursor: pointer;
-  accent-color: var(--primary-color);
+#message {
+  margin-top: var(--spacing-lg);
+  font-size: 1em;
+  color: green;
 }
