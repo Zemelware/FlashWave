@@ -27,13 +27,13 @@ browser.runtime.onConnect.addListener((port) => {
   }
 });
 
-async function getApiKey() {
-  const result = await browser.storage.sync.get(["apiKey"]);
-  if (result.apiKey) {
-    return result.apiKey;
-  } else {
-    return null;
-  }
+
+async function getApiKeyAndModel() {
+  const result = await browser.storage.sync.get(["apiKey", "llmModel"]);
+  return {
+    apiKey: result.apiKey || null,
+    llmModel: result.llmModel || null,
+  };
 }
 
 // Create context menu item on installation
@@ -47,10 +47,10 @@ browser.runtime.onInstalled.addListener(() => {
 
 browser.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "generateFlashcards" && info.selectionText) {
-    const apiKey = await getApiKey();
+    const storage = await getApiKeyAndModel();
     const originalTabId = tab.id;
 
-    if (!apiKey) {
+    if (!storage.apiKey) {
       try {
         await browser.tabs.sendMessage(originalTabId, {
           type: "SHOW_ERROR",
@@ -65,8 +65,9 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
     // Call the new streaming function
     await generateFlashcardsStream({
       selectedText: info.selectionText,
-      apiKey: apiKey,
+      apiKey: storage.apiKey,
       originalTabId: originalTabId,
+      llmModel: storage.llmModel,
     });
   }
 });
@@ -74,7 +75,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
 /**
  * Stream flashcards generation and display in real time.
  */
-async function generateFlashcardsStream({ selectedText, apiKey, originalTabId }) {
+async function generateFlashcardsStream({ selectedText, apiKey, originalTabId, llmModel }) {
   // Open or focus flashcards page
   const flashcardsUrl = browser.runtime.getURL("dist/flashcards/flashcards.html");
   let targetTab = null;
@@ -145,7 +146,7 @@ async function generateFlashcardsStream({ selectedText, apiKey, originalTabId })
     // Track which cards have already been sent (by index)
     let sentCardIndexes = new Set();
 
-    for await (const parsed of streamFlashcardsFromLLM({ selectedText, apiKey })) {
+    for await (const parsed of streamFlashcardsFromLLM( selectedText, apiKey, llmModel )) {
       if (
         parsed &&
         typeof parsed === "object" &&

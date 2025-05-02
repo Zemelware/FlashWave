@@ -14,7 +14,17 @@
     <label for="apiKey">Gemini API Key</label>
     <input type="password" id="apiKey" placeholder="Enter your API key" />
 
-    <button id="save-button" class="btn">Save Key</button>
+    <label for="modelSelect" class="margin-top">Gemini Model</label>
+    <select id="modelSelect">
+      <option value="gemini-2.5-flash-preview-04-17">Gemini 2.5 Flash Preview (recommended)</option>
+      <option value="gemini-2.5-pro-exp-03-25">Gemini 2.5 Pro Experimental</option>
+      <option value="gemini-2.0-flash">Gemini 2.0 Flash</option>
+      <option value="gemini-2.0-flash-lite">Gemini 2.0 Flash-Lite</option>
+      <option value="custom">Custom...</option>
+    </select>
+    <input type="text" id="customModelInput" placeholder="E.g., gemini-2.5-pro-preview-03-25" style="display:none;" />
+
+    <button id="save-button" class="btn margin-top">Save Settings</button>
     <div id="save-status" class="status-message margin-top-sm"></div>
 
     <script src="popup.js"></script>

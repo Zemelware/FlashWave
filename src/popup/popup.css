@@ -7,7 +7,7 @@ body {
 }
 label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 .status-message {
@@ -15,12 +15,10 @@ label {
   color: green;
 }
 
-input {
-  padding: 5px var(--spacing);
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
+input, select {
+  padding: 5px;
 }
-input:focus {
-  outline: none;
-  border-color: var(--btn-bg);
+
+#customModelInput {
+  margin-top: 5px;
 }

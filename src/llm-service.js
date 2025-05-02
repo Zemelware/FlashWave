@@ -5,9 +5,14 @@ import { parse as bestEffortParse } from "best-effort-json-parser";
  * Stream flashcards generation from LLM (GoogleGenAI Gemini).
  * @param {string} text Text to generate flashcards from.
  * @param {string} apiKey Gemini API key.
+ * @param {string} [model] Gemini model name.
  * @returns {AsyncGenerator<{setName: string, flashcards: Array<{term: string, definition: string}>}, void, unknown>}
  */
-export async function* streamFlashcardsFromLLM({ text, apiKey }) {
+export async function* streamFlashcardsFromLLM(
+  text,
+  apiKey,
+  model = "gemini-2.5-flash-preview-04-17"
+) {
   const { GoogleGenAI, Type } = await import("@google/genai");
   if (!apiKey) throw new Error("API Key is missing.");
   if (!text) throw new Error("Selected text is missing.");
@@ -31,7 +36,7 @@ ${text}
 </content>`;
 
   const response = await genAI.models.generateContentStream({
-    model: "gemini-2.0-flash-lite",
+    model: model,
     contents: prompt,
     config: {
       systemInstruction: systemMessage,
