@@ -35,7 +35,9 @@
         "dist/flashcards/create-flashcards.js",
         "dist/flashcards/flashcard-form.css",
         "dist/flashcards/import-export.html",
-        "dist/flashcards/import-export.js"
+        "dist/flashcards/import-export.js",
+        "dist/flashcards/sidebar.html",
+        "dist/flashcards/sidebar-loader.js"
       ],
       "matches": ["<all_urls>"]
     }
