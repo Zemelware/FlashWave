@@ -15,7 +15,7 @@ export async function* streamFlashcardsFromLLM(
 ) {
   const { GoogleGenAI, Type } = await import("@google/genai");
   if (!apiKey) throw new Error("API Key is missing.");
-  if (!text) throw new Error("Selected text is missing.");
+  if (!text) throw new Error("Text is missing.");
 
   const genAI = new GoogleGenAI({ apiKey });
   const systemMessage = `

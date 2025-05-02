@@ -183,14 +183,33 @@ async function generateFlashcardsStream({ selectedText, apiKey, originalTabId, l
       const finalSetName = await saveAndShowFlashcards(setName, flashcards, originalTabId);
       port.postMessage({ type: "STREAM_COMPLETE", setName: finalSetName });
     } else {
-      throw new Error("Invalid response structure received from AI.");
+      throw new Error("Invalid response structure received from the LLM.");
     }
   } catch (error) {
     console.error("Error streaming or parsing flashcards:", error);
+
+    let msg;
+    // Try to extract the specific error from the Gemini API
+    const match = error.message.match(/{.*}/s);
+    if (match) {
+      try {
+        const parsedError = JSON.parse(match[0]);
+        if (parsedError.error && parsedError.error.message) {
+          let errorMessage = parsedError.error.message;
+          errorMessage = JSON.parse(errorMessage);
+          msg = `There was an error from the Gemini API when generating flashcards:<br>${errorMessage.error.message}`;
+        }
+      } catch (e) {
+        // If the above failed, then the error is not from the Gemini API, in which case
+        // we show a generic error message
+        msg = "Error generating flashcards. Check the console for the full error message.";
+      }
+    }
+
     if (port) {
       port.postMessage({
         type: "STREAM_ERROR",
-        message: "Error generating flashcards. Check the console for the full error message.",
+        message: msg,
       });
     }
   }
