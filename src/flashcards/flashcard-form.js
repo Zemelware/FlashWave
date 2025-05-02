@@ -14,7 +14,9 @@ export function createCardEntry(templateEl, term = "", definition = "") {
   termInput.value = term;
   defInput.value = definition;
   node.querySelector(".delete-card-btn").addEventListener("click", () => {
-    node.remove();
+    if (confirm("Are you sure you want to delete this flashcard?")) {
+      node.remove();
+    }
   });
   return node;
 }
