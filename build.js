@@ -11,10 +11,11 @@ esbuild
     platform: "browser",
     plugins: [
       copy({
-        resolveFrom: 'cwd',
+        resolveFrom: "cwd",
         assets: [
           { from: ["./src/**/*.html"], to: ["./dist"] },
           { from: ["./src/**/*.css"], to: ["./dist"] },
+          { from: ["./src/**/*.{png,jpg,jpeg}"], to: ["./dist"] },
         ],
       }),
     ],
