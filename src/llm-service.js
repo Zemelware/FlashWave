@@ -13,8 +13,22 @@ export async function* streamFlashcardsFromLLM({ text, apiKey }) {
   if (!text) throw new Error("Selected text is missing.");
 
   const genAI = new GoogleGenAI({ apiKey });
-  const prompt = `Generate flashcards based on the following content. Keep the front/back of each flashcard brief, just including important information.\n\n<content>\n${text}\n</content>`;
-  const systemMessage = `You are a professional flash card generator. You help students study by generating flash cards based on their study content.\nAlways create an exhaustive list of flashcards that will prepare the user well for a test/exam. Make sure to include all important concepts and terms in the flashcards. Also generate a concise, descriptive name for the flashcard set.`;
+  const systemMessage = `
+You are a professional flash card generator that transforms a passage of text into concise, high-quality flash cards for students to study from.
+
+Guidelines:
+- Always create an exhaustive list of flashcards that will prepare the user well for a test/exam.
+- Exclude trivial details or irrelevant information.
+- Make sure to include all important concepts and terms in the flashcards.
+- Keep the front and back of each flashcard brief, just including important information.`;
+
+  const prompt = `
+Generate flashcards based on the following content.
+Focus on the most important concepts, terms, or facts a student should remember.
+
+<content>
+${text}
+</content>`;
 
   const response = await genAI.models.generateContentStream({
     model: "gemini-2.0-flash-lite",
@@ -37,12 +51,14 @@ export async function* streamFlashcardsFromLLM({ text, apiKey }) {
               properties: {
                 term: {
                   type: Type.STRING,
-                  description: "Flashcard term (front)",
+                  description:
+                    "Flashcard term (front). This is a concept, keyword, question, or phrase that students should recall.",
                   nullable: false,
                 },
                 definition: {
                   type: Type.STRING,
-                  description: "Flashcard definition (back)",
+                  description:
+                    "Flashcard definition (back). This should be a clear and concise, self-contained explanation or answer.",
                   nullable: false,
                 },
               },
