@@ -23,25 +23,22 @@ input, select {
   margin-top: 5px;
 }
 
-.help-icon-link {
-  margin-left: 4px;
-}
-
 .help-icon {
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  border: 1px solid #636363;
-  color: #636363;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 500;
+  margin-left: 3px;
+  display: inline-flex;
+  vertical-align: middle;
+  color: #6366f1;
   cursor: pointer;
-  box-sizing: border-box;
 }
 
-.help-icon-link:hover .help-icon,
-.help-icon-link:focus .help-icon {
-  background: #ededed;
+.help-icon svg {
+  display: block;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+.help-icon:hover,
+.help-icon:focus {
+  color: #4338ca;
+  filter: drop-shadow(0 0 2px #c7d2fe);
 }
