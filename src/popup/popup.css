@@ -22,3 +22,26 @@ input, select {
 #customModelInput {
   margin-top: 5px;
 }
+
+.help-icon-link {
+  margin-left: 4px;
+}
+
+.help-icon {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid #636363;
+  color: #636363;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.help-icon-link:hover .help-icon,
+.help-icon-link:focus .help-icon {
+  background: #ededed;
+}

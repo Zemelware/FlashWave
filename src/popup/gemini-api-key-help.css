@@ -1,0 +1,38 @@
+body {
+  max-width: 90%;
+  margin: 2em auto;
+  font-family: var(--font-family-ui, "Segoe UI", "Roboto", Arial, sans-serif);
+  font-size: 1em;
+  background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+  padding: 2em 1.5em;
+  border-radius: 18px;
+  box-shadow: 0 6px 32px 0 rgba(60, 60, 120, 0.13), 0 1.5px 6px 0 rgba(60, 60, 120, 0.08);
+}
+
+h1 {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+  color: #6366f1;
+}
+
+li {
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+a {
+  color: #6366f1;
+}
+
+a:hover {
+  color: #3b3dbd;
+}
+
+.note {
+  background: #e0e7ff;
+  color: #1565c0;
+  padding: 0.7em 1em;
+  border-radius: 10px;
+  font-size: 0.98em;
+  margin-top: 1.5em;
+}
