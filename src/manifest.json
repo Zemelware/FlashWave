@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "name": "FlashWave AI Flashcards",
+  "version": "0.0.1",
+  "description": "Generate flashcards from selected text on any webpage using AI.",
+  "permissions": ["contextMenus", "storage", "scripting", "tabs", "downloads"],
+  "background": {
+    "service_worker": "background.js",
+    "scripts": ["background.js"]
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "action": {
+    "default_title": "FlashWave Settings",
+    "default_popup": "popup/popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{9614b36c-3b96-49ee-b7b8-05718893a6e5}",
+      "strict_min_version": "0.0.1"
+    }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "common.css",
+        "flashcards/flashcards.html",
+        "flashcards/flashcards.js",
+        "flashcards/flashcards.css",
+        "flashcards/create-flashcards.html",
+        "flashcards/create-flashcards.js",
+        "flashcards/flashcard-form.css",
+        "flashcards/import-export.html",
+        "flashcards/import-export.js",
+        "flashcards/sidebar.html",
+        "flashcards/sidebar-loader.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  }
+}

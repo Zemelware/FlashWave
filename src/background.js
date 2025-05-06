@@ -77,7 +77,7 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
  */
 async function generateFlashcardsStream({ selectedText, apiKey, originalTabId, llmModel }) {
   // Open or focus flashcards page
-  const flashcardsUrl = browser.runtime.getURL("dist/flashcards/flashcards.html");
+  const flashcardsUrl = browser.runtime.getURL("flashcards/flashcards.html");
   let targetTab = null;
   const tabs = await browser.tabs.query({ url: flashcardsUrl });
   if (tabs.length > 0) {
@@ -233,7 +233,7 @@ async function saveAndShowFlashcards(setName, flashcards, originalTabId) {
     await browser.storage.local.set({ flashcardSets: allSets });
 
     // Check for existing flashcards tab
-    const flashcardsUrl = browser.runtime.getURL("dist/flashcards/flashcards.html");
+    const flashcardsUrl = browser.runtime.getURL("flashcards/flashcards.html");
     const existingTabs = await browser.tabs.query({ url: flashcardsUrl });
     for (const tab of existingTabs) {
       try {

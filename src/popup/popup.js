@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   openFlashcardsButton.addEventListener("click", async () => {
-    const flashcardsUrl = browser.runtime.getURL("dist/flashcards/flashcards.html");
+    const flashcardsUrl = browser.runtime.getURL("flashcards/flashcards.html");
     const existingTabs = await browser.tabs.query({ url: flashcardsUrl });
     if (existingTabs.length > 0) {
       await browser.tabs.update(existingTabs[0].id, { active: true });

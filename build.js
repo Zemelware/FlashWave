@@ -16,6 +16,7 @@ esbuild
           { from: ["./src/**/*.html"], to: ["./dist"] },
           { from: ["./src/**/*.css"], to: ["./dist"] },
           { from: ["./src/**/*.{png,jpg,jpeg}"], to: ["./dist"] },
+          { from: ["./src/manifest.json"], to: ["./dist"] },
         ],
       }),
     ],
