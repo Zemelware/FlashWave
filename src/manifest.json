@@ -3,7 +3,7 @@
   "name": "FlashWave AI Flashcards",
   "version": "0.0.1",
   "description": "Generate flashcards from selected text on any webpage using AI.",
-  "permissions": ["contextMenus", "storage", "scripting", "tabs", "downloads"],
+  "permissions": ["contextMenus", "storage", "tabs", "downloads"],
   "background": {
     "service_worker": "background.js",
     "scripts": ["background.js"]
