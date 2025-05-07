@@ -1,6 +1,19 @@
 import browser from "webextension-polyfill";
 import { streamFlashcardsFromLLM } from "./llm-service.js";
 
+// Helper to show an alert pop-up in the specified tab
+async function showAlert(tabId, message) {
+  try {
+    await browser.scripting.executeScript({
+      target: { tabId },
+      func: (msg) => alert(msg),
+      args: [message],
+    });
+  } catch (e) {
+    console.error(`Failed to send alert to tab ${tabId}:`, e);
+  }
+}
+
 // Track ports for flashcards streaming by tabId
 const flashcardPorts = new Map();
 
@@ -27,7 +40,6 @@ browser.runtime.onConnect.addListener((port) => {
   }
 });
 
-
 async function getApiKeyAndModel() {
   const result = await browser.storage.sync.get(["apiKey", "llmModel"]);
   return {
@@ -51,14 +63,10 @@ browser.contextMenus.onClicked.addListener(async (info, tab) => {
     const originalTabId = tab.id;
 
     if (!storage.apiKey) {
-      try {
-        await browser.tabs.sendMessage(originalTabId, {
-          type: "SHOW_ERROR",
-          message: "Gemini API Key not configured. Please set it in the extension settings.",
-        });
-      } catch (error) {
-        console.error(`Failed to send SHOW_ERROR message to tab ${originalTabId}:`, error.message);
-      }
+      showAlert(
+        originalTabId,
+        "Gemini API Key not configured. Please set it in the extension settings."
+      );
       return;
     }
 
@@ -129,11 +137,10 @@ async function generateFlashcardsStream({ selectedText, apiKey, originalTabId, l
 
   if (!port) {
     console.error(`No streaming port connected for tab ${tabId} after ${maxAttempts} attempts.`);
-    await browser.tabs.sendMessage(tabId, {
-      type: "SHOW_ERROR",
-      message:
-        "Could not connect to the Flashcards page for streaming. Please reload the page and try again.",
-    });
+    showAlert(
+      tabId,
+      "Could not connect to the Flashcards page for streaming. Please reload the page and try again."
+    );
     return;
   }
 
@@ -146,7 +153,7 @@ async function generateFlashcardsStream({ selectedText, apiKey, originalTabId, l
     // Track which cards have already been sent (by index)
     let sentCardIndexes = new Set();
 
-    for await (const parsed of streamFlashcardsFromLLM( selectedText, apiKey, llmModel )) {
+    for await (const parsed of streamFlashcardsFromLLM(selectedText, apiKey, llmModel)) {
       if (
         parsed &&
         typeof parsed === "object" &&
@@ -248,10 +255,6 @@ async function saveAndShowFlashcards(setName, flashcards, originalTabId) {
     return finalSetName;
   } catch (error) {
     console.error("Error storing flashcards:", error);
-    // Send error back to the original tab if possible
-    await browser.tabs.sendMessage(originalTabId, {
-      type: "SHOW_ERROR",
-      message: "Error saving flashcards: " + error.message,
-    });
+    showAlert(originalTabId, "Error saving flashcards: " + error.message);
   }
 }
