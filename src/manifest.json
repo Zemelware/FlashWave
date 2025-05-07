@@ -24,24 +24,6 @@
       "strict_min_version": "0.0.1"
     }
   },
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "common.css",
-        "flashcards/flashcards.html",
-        "flashcards/flashcards.js",
-        "flashcards/flashcards.css",
-        "flashcards/create-flashcards.html",
-        "flashcards/create-flashcards.js",
-        "flashcards/flashcard-form.css",
-        "flashcards/import-export.html",
-        "flashcards/import-export.js",
-        "flashcards/sidebar.html",
-        "flashcards/sidebar-loader.js"
-      ],
-      "matches": ["<all_urls>"]
-    }
-  ],
   "icons": {
     "16": "icons/icon-16.png",
     "32": "icons/icon-32.png",
