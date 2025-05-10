@@ -12,7 +12,7 @@ FlashWave supercharges your study sessions by converting highlighted text, PDFs,
 
 ## Installation
 
-This extension is available on the Chrome Web Store [here](https://chromewebstore.google.com/detail/FlashWave%20AI%20Flashcards/blnaonblnoagnemadopjbbcjefclfdib) and it will be on addons.mozilla.org soon.
+This extension is available on the Chrome Web Store [here](https://chromewebstore.google.com/detail/FlashWave%20AI%20Flashcards/blnaonblnoagnemadopjbbcjefclfdib) and on addons.mozilla.org [here](https://addons.mozilla.org/addon/flashwave-ai-flashcards/).
 
 ## Usage
 1. Once installed, enter your Gemini API key in the extension settings (this is a requirement for the extension to work). If you don't know how to get this, click the question mark icon next to the text field which will bring you to a page explaining how to get this.
