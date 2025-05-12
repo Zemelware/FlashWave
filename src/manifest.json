@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FlashWave AI Flashcards",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Turn any web text into AI‑generated flashcards in one click. Perfect for rapid review, spaced repetition, and smarter studying.",
   "permissions": ["contextMenus", "storage", "downloads", "activeTab", "scripting"],
   "background": {
