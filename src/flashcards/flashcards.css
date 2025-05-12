@@ -33,6 +33,11 @@ body {
   margin-bottom: var(--spacing-xl);
 }
 
+.main-content .subtitle {
+  font-size: 1.2em;
+  margin-bottom: var(--spacing-lg);
+}
+
 .flashcard-container {
   display: flex;
   flex-direction: column;
