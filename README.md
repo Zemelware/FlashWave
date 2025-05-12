@@ -21,6 +21,9 @@ This extension is available on the Chrome Web Store [here](https://chromewebstor
 4. You can view the flashcards, edit them, and create new flashcard sets.
 5. Happy studying!
 
+## Demo
+https://github.com/user-attachments/assets/554800a4-da02-4d9a-aef7-d04a63880b09
+
 ## Screenshots
 <img width="640" alt="1" src="https://github.com/user-attachments/assets/55c717ba-00e0-4fa1-897e-4debb1a97ad1" />
 <img width="640" alt="2" src="https://github.com/user-attachments/assets/4aa656ef-2be3-477b-8126-5d0a969f0068" />
